@@ -1,0 +1,89 @@
+<html>
+<title>towers!</title>
+<body>
+  <link rel="stylesheet" type="text/css" href="towers.css" />
+  <script src="jQuery.js"></script>
+  <script type="text/javascript"> 
+    $(document).ready(function() {
+      draggable($('.dragme'));
+      droppable($('.drophere'));
+      steps = 0;
+    });
+
+    var steps;
+
+    function cancel(event) {
+      event.preventDefault();
+      return false;
+    }
+
+    function draggable(element) {
+      $(element)
+      .attr('draggable', 'true')
+      .bind('dragend', cancel)
+      .bind('dragstart', function(event) {
+        if (canBeDragged($(event.target).parent(), event.target.id))
+          event.originalEvent.dataTransfer.setData("Text", event.target.id);
+        return true;
+      })
+    }
+
+    function droppable(element) {
+      $(element)
+      .bind('dragover', cancel)
+      .bind('drop', function(event) {
+        target = $(event.target);
+        if (target.attr("class") != "drophere") 
+        // in case the drop was on another item such as another box
+          target = $(target.parents(".drophere"));
+        event.preventDefault();
+        var discId = event.originalEvent.dataTransfer.getData("Text");
+        if (discId && canAppend(target.find(".box"), discId)) {
+          $("#count").text(++steps);
+          disc = $("#"+discId);
+          disc.remove();
+          target.find(".box").prepend(disc);
+          draggable(disc);
+          $("#message").text("");
+        } else
+          $("#message").text("hey man, you can't do that");
+        done(target.find(".box"))
+        return false;
+      });
+    }
+
+    function done(target) {
+      if ($(target).children().length == 4 && $(target).parent().attr("id") != "drop1"){
+        $("#count").text("");
+        $("#steps").text("");
+        $("#message").text("you've won! in " + steps + " steps");
+      }
+    }
+
+    function canBeDragged(from, discId) {
+      return $(from).children()[0].id == discId;
+    }
+
+    function canAppend(target, discId) {
+      children = $(target).children();
+      return children.length == 0 || parseInt(children[0].id) >= parseInt(discId);
+    }
+  </script>
+    <div id="steps">steps: <span id="count">0</span></div>
+    <div id="message"></div>
+    <div class="drophere" id="drop1">
+      <div class="box">
+        <div class="dragme dragme-1" id="1"></div>
+        <div class="dragme dragme-2" id="2"></div>
+        <div class="dragme dragme-3" id="3"></div>
+        <div class="dragme dragme-4" id="4"></div>
+      </div>
+    </div>
+    <div class="drophere" id="drop2">
+      <div class="box"></div>
+    </div>
+    <div class="drophere" id="drop3">
+      <div class="box"></div>
+    </div>
+</body>
+</html>
