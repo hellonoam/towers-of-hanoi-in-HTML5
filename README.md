@@ -4,4 +4,4 @@ Developed by Noam Szpiro
 
 Description
 -----------
-towers.html contains javascript needed. jquery is used for javacript functions but for drag & drop. it is nativ HTML5 
+towers.html contains javascript needed. jquery is used for javacript functions but not for drag & drop.
